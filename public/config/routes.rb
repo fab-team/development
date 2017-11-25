@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :board_messages
+  resources :board_users
   devise_for :accounts
 	resources :answers
 	resources :questions
