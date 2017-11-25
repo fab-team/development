@@ -40,4 +40,5 @@ Rails.application.routes.draw do
 	post 'helo', to: 'helo#index'
 	post 'helo/index'
 	get 'helo/other'
+	root to: 'board_messages#index'
 end
