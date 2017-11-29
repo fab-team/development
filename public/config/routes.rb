@@ -1,44 +1,51 @@
 Rails.application.routes.draw do
+  root "top#index"
+  get "about" => "top#about", as: "about"
+  get "lesson/:action(/:name)" => "lesson"
 
-  resources :board_messages
-  resources :board_users
-  devise_for :accounts
-	resources :answers
-	resources :questions
-	### People controller ###
+  resources :members do
+    collection { get "search" }
+  end
 
-	get 'helo/login_check'
+ #  resources :board_messages
+ #  resources :board_users
+ #  devise_for :accounts
+	# resources :answers
+	# resources :questions
+	# ### People controller ###
 
-	get 'people/index'
-	get 'people', to: 'people#index'
+	# get 'helo/login_check'
 
-	get 'people/find'
-	post 'people/find'
+	# get 'people/index'
+	# get 'people', to: 'people#index'
 
-	get 'people/add'
-	post 'people/add', to: 'people#create'
+	# get 'people/find'
+	# post 'people/find'
 
-	get 'people/edit/:id', to: 'people#edit'
-	post 'people/edit/:id', to: 'people#update'
-	patch 'people/edit/:id', to: 'people#update'
+	# get 'people/add'
+	# post 'people/add', to: 'people#create'
 
-	get 'people/:id', to: 'people#show'
+	# get 'people/edit/:id', to: 'people#edit'
+	# post 'people/edit/:id', to: 'people#update'
+	# patch 'people/edit/:id', to: 'people#update'
 
-	get 'people/delete/:id', to: 'people#delete'
+	# get 'people/:id', to: 'people#show'
 
-	### Dengonban controller ###
+	# get 'people/delete/:id', to: 'people#delete'
 
-	get 'dengonban', to: 'dengonban#index'
-	post 'dengonban', to: 'dengonban#index'
-	get 'dengonban/index'
-	post 'dengonban/index'
+	# ### Dengonban controller ###
 
-	### helo controller ###
+	# get 'dengonban', to: 'dengonban#index'
+	# post 'dengonban', to: 'dengonban#index'
+	# get 'dengonban/index'
+	# post 'dengonban/index'
 
-	get 'helo', to: 'helo#index'
-	get 'helo/index'
-	post 'helo', to: 'helo#index'
-	post 'helo/index'
-	get 'helo/other'
-	root to: 'board_messages#index'
+	# ### helo controller ###
+
+	# get 'helo', to: 'helo#index'
+	# get 'helo/index'
+	# post 'helo', to: 'helo#index'
+	# post 'helo/index'
+	# get 'helo/other'
+	# root to: 'board_messages#index'
 end
