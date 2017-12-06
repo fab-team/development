@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171126111109) do
+ActiveRecord::Schema.define(version: 20171205170146) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -37,6 +37,16 @@ ActiveRecord::Schema.define(version: 20171126111109) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "articles", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "body", null: false
+    t.datetime "released_at", null: false
+    t.datetime "expired_at"
+    t.boolean "member_only", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "board_messages", force: :cascade do |t|
     t.text "content"
     t.integer "board_user_id"
@@ -52,6 +62,26 @@ ActiveRecord::Schema.define(version: 20171126111109) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "entries", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.string "title", null: false
+    t.text "body"
+    t.datetime "posted_at", null: false
+    t.string "status", default: "draft", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_entries_on_member_id"
+  end
+
+  create_table "member_images", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.binary "data"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_member_images_on_member_id"
+  end
+
   create_table "members", force: :cascade do |t|
     t.integer "number", null: false
     t.string "name", null: false
@@ -62,6 +92,7 @@ ActiveRecord::Schema.define(version: 20171126111109) do
     t.boolean "administrator", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "hashed_password"
   end
 
   create_table "people", force: :cascade do |t|
@@ -79,6 +110,15 @@ ActiveRecord::Schema.define(version: 20171126111109) do
     t.boolean "finished"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "votes", force: :cascade do |t|
+    t.integer "entry_id", null: false
+    t.integer "member_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entry_id"], name: "index_votes_on_entry_id"
+    t.index ["member_id"], name: "index_votes_on_member_id"
   end
 
 end

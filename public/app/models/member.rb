@@ -1,6 +1,12 @@
 class Member < ApplicationRecord
   include EmailAddressChecker
 
+  has_many :entries, dependent: :destroy
+  has_many :votes, dependent: :destroy
+  has_many :voted_entries, through: :votes, source: :entry
+  has_one :image, class_name: "MemberImage", dependent: :destroy
+  accepts_nested_attributes_for :image, allow_destroy: true
+
   validates :number, presence: true,
     numericality: { only_integer: true,
       greater_than: 0, less_than: 100, allow_blank: true },
@@ -11,6 +17,23 @@ class Member < ApplicationRecord
     uniqueness: { case_sensitive: false }
   validates :full_name, length: { maximum: 20 }
   validate :check_email
+  validates :password, presence: { on: :create },
+    confirmation: { allow_blank: true }
+
+  attr_accessor :password, :password_confirmation
+
+  def password=(val)
+    if val.present?
+      self.hashed_password = BCrypt::Password.create(val)
+    end
+    @password = val
+  end
+
+  # 投票のルール
+  # 「自分の記事には投票できない」「1つの記事に1回しか投票できない」
+  def votable_for?(entry)
+    entry && entry.author != self && !votes.exists?(entry_id:entry.id)
+  end
 
   private
   def check_email
@@ -20,15 +43,25 @@ class Member < ApplicationRecord
   end
 
 
-	class << self
-		def search (query)
-			rel = order("number")
-			if query.present?
+  class << self
+    def search (query)
+     rel = order("number")
+     if query.present?
 				# nameカラムまたはfull_nameカラムを対象にレコードを絞り込む
 				rel = rel.where("name LIKE ? OR full_name LIKE ?","%#{query}%","%#{query}%")
 			end
 			# リレーションオブジェクトをメソッドに戻り値として返す
 			rel
 		end
-	end
+
+    def authenticate(name,password)
+      member = find_by(name:name)
+      if member && member.hashed_password.present? &&
+        BCrypt::Password.new(member.hashed_password) == password
+        member
+      else
+        nil
+      end
+    end
+  end
 end
