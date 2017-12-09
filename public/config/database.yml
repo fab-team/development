@@ -22,4 +22,11 @@ test:
 
 production:
   <<: *default
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: na_ndadb
+  username: root
+  password: L2vdCmYV
+  host: localhost
   database: db/production.sqlite3
